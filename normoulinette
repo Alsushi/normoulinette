@@ -80,8 +80,10 @@ class FileChecker(object):
     def checkHeaderLine(self):
         """Vérifie (basiquement) la présence du header Epitech"""
         if (self.cur == 0 and self.line != "/*") \
-           or (self.cur == 8 and self.line != "*/") \
-           or (self.cur not in (0, 8) and not self.line.startswith("**")):
+           or (self.cur == 5 and self.line != "*/") \
+           #or (self.cur == 8 and self.line != "*/") \
+           or (self.cur not in (0, 5) and not self.line.startswith("**")):
+           #or (self.cur not in (0, 8) and not self.line.startswith("**")):
             self.printNormError("Header invalide")
             self.inHeader = False
 
@@ -190,7 +192,8 @@ class FileChecker(object):
                 self.printNormError("Majuscule dans le nom de la fonction " + name)
             if self.line[res.end(0) - 1] == ';':
                 if self.path.endswith(".c"):
-                    self.printNormError("Déclaration d'un prototype dans un fichier .c")
+                    #self.printNormError("Déclaration d'un prototype dans un fichier .c")
+                    #Allowed in Coding-Style-Epitech 2019
             else:
                 if self.path.endswith(".h"):
                     self.printNormError("Implémentation d'une fonction dans un fichier .h")
@@ -257,7 +260,9 @@ class FileChecker(object):
 
     def checkForbidden(self):
         """Vérifie la présence de fonctions et de mots-clefs interdits par la norme"""
-        exp = re.compile('[ \t](goto|for|switch)([ \t\(])')
+        exp = re.compile('[ \t](goto)([ \t\(])')
+        #for and switch are allowed on Style-Coding-Epitech2019
+        #exp = re.compile('[ \t](goto|for|switch)([ \t\(])')
         res = re.search(exp, self.line)
         if self.isFound(res):
             self.printNormError("Mot-clef interdit : " + res.group()[1:-1])
