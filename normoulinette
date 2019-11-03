@@ -81,9 +81,7 @@ class FileChecker(object):
         """Vérifie (basiquement) la présence du header Epitech"""
         if (self.cur == 0 and self.line != "/*") \
            or (self.cur == 5 and self.line != "*/") \
-           #or (self.cur == 8 and self.line != "*/") \
            or (self.cur not in (0, 5) and not self.line.startswith("**")):
-           #or (self.cur not in (0, 8) and not self.line.startswith("**")):
             self.printNormError("Header invalide")
             self.inHeader = False
 
@@ -95,14 +93,6 @@ class FileChecker(object):
             self.printNormError("Ligne trop longue ({} > 80)".format(l))
         if l > 0 and tmp[-1] == ' ':
             self.printNormError("Espace en fin de ligne")
-        i = 0
-        found = 0
-        for m in re.finditer(";", self.line):
-            if self.isFound(m):
-                found += 1
-            if found == 2:
-                self.printNormError("Ligne multi-instructions")
-                break
 
     def checkComments(self):
         """Vérifie la présence et la validité des commentaires"""
@@ -190,13 +180,6 @@ class FileChecker(object):
             params = self.line[m.end(0):self.line.rfind(')')]
             if re.findall("[A-Z]+", name):
                 self.printNormError("Majuscule dans le nom de la fonction " + name)
-            if self.line[res.end(0) - 1] == ';':
-                if self.path.endswith(".c"):
-                    #self.printNormError("Déclaration d'un prototype dans un fichier .c")
-                    #Allowed in Coding-Style-Epitech 2019
-            else:
-                if self.path.endswith(".h"):
-                    self.printNormError("Implémentation d'une fonction dans un fichier .h")
 
     def checkFunction(self):
         """Vérifie le nombre de lignes d'une fonction, et le nombre de fonctions"""
@@ -210,8 +193,8 @@ class FileChecker(object):
                 self.printNormError("Fonction en trop (5 fonctions max)")
         elif self.inFunction > 0:
             self.funcLinesCount += 1
-            if self.funcLinesCount > 25:
-                self.printNormError("Ligne en trop dans la fonction (25 lignes max)")
+            if self.funcLinesCount > 20:
+                self.printNormError("Ligne en trop dans la fonction (20 lignes max)")
 
     def checkTypedef(self):
         """Vérifie la validité des noms de types personnalisés"""
@@ -249,14 +232,8 @@ class FileChecker(object):
             if not res.group().replace('\t', ' ').split(' ')[-1].startswith(keyword[0] + '_'):
                 self.printNormError("Nom " + desc + " sans " + keyword[0] + "_")
 
-    def checkProtectMacro(self):
-        """Vérifie la présence et la syntaxe de la macro de protection des fichier .h"""
-        if self.cur == 10 and self.line != "#ifndef " + self.macro:
-            self.printNormError("#ifndef de protection invalide")
-        elif self.cur == 11 and self.line != "# define " + self.macro:
-            self.printNormError("# define de protection invalide")
-        elif self.cur == len(self.lines) and self.line != "#endif /* !" + self.macro + " */":
-            self.printNormError("#endif de protection invalide")
+    def checkProtectMacro(self):     
+        """Vérifie la présence et la syntaxe de la macro de protection des fichier .h""" 
 
     def checkForbidden(self):
         """Vérifie la présence de fonctions et de mots-clefs interdits par la norme"""
@@ -278,7 +255,7 @@ class FileChecker(object):
 
     def checkLine(self):
         """Vérifie le respect de la norme sur la ligne courante"""
-        if self.cur <= 8 and self.inHeader:
+        if self.cur <= 5 and self.inHeader:
             self.checkHeaderLine()
             return
         if not self.line:
