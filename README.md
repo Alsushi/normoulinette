@@ -44,3 +44,8 @@ Pas (encore) géré :
 * Gestion des paramètres de fonctions sur plusieurs lignes
 * Norme des Makefiles
 * Validité des Makefiles
+
+---
+##### mis à jour 2019:
+* prise en compte de quelques modifications de la norme Epitech.
+* tip: en complément de ruby Norme.ez
